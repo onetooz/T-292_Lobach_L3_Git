@@ -1,0 +1,37 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Сортировка постов</title>
+</head>
+<body>
+  <h1>Первые 3 поста с самыми длинными заголовками</h1>
+  <ul id="postList"></ul>
+
+  <script>
+    function getPostsWithCallback(callback){
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', 'https://jsonplaceholder.typicode.com/todos/1/posts');
+      xhr.onload = () => {
+        const data = JSON.parse(xhr.responseText);
+        const sorted = data.sort((a,b) => b.title.length - a.title.length);
+        callback(sorted);
+      };
+      xhr.onerror = () => console.error("Ошибка сети");
+      xhr.send();
+    }
+
+    getPostsWithCallback((posts) => {
+      const topPosts = posts.slice(0, 3);
+      const list = document.getElementById('postList');
+      
+      topPosts.forEach(post => {
+        const li = document.createElement('li');
+        li.textContent = post.title;
+        list.appendChild(li);
+      });
+    });
+  </script>
+</body>
+</html>

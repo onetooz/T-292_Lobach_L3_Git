@@ -1,0 +1,37 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Комментарии по имени</title>
+</head>
+<body>
+  <h1>Первые 3 комментария отсортированы по имени</h1>
+  <ul id="commentList"></ul>
+
+  <script>
+    function getCommentsWithCallback(callback){
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', 'https://jsonplaceholder.typicode.com/todos/1/comments');
+      xhr.onload = () => {
+        const data = JSON.parse(xhr.responseText);
+        const sorted = data.sort((a, b) => a.name.localeCompare(b.name));
+        callback(sorted);
+      };
+      xhr.onerror = () => console.error("Ошибка сети");
+      xhr.send();
+    }
+
+    getCommentsWithCallback((comments) => {
+      const topComments = comments.slice(0, 3);
+      const list = document.getElementById('commentList');
+      
+      topComments.forEach(comment => {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${comment.name}</strong><br>${comment.body}`;
+        list.appendChild(li);
+      });
+    });
+  </script>
+</body>
+</html>
